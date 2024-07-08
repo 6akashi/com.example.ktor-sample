@@ -13,7 +13,7 @@ import java.util.UUID
 class RegisterController(val call: ApplicationCall) {
 
     suspend fun registerNewUser(){
-        val registerRecieveRemote = call.receive<RegistrationRecieveRemote>()
+        val registerRecieveRemote = call.receive<RegisterRecieveRemote>()
         val userDTO = Users.fetchUser(registerRecieveRemote.login)
 
         if(userDTO != null){
