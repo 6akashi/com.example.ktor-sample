@@ -10,43 +10,7 @@ import kotlinx.coroutines.*
 
 fun Application.configureDatabases() {
     val dbConnection: Connection = connectToPostgres(embedded = true)
-    val cityService = CityService(dbConnection)
-    
-    routing {
-    
-        // Create city
-        post("/cities") {
-            val city = call.receive<City>()
-            val id = cityService.create(city)
-            call.respond(HttpStatusCode.Created, id)
-        }
-    
-        // Read city
-        get("/cities/{id}") {
-            val id = call.parameters["id"]?.toInt() ?: throw IllegalArgumentException("Invalid ID")
-            try {
-                val city = cityService.read(id)
-                call.respond(HttpStatusCode.OK, city)
-            } catch (e: Exception) {
-                call.respond(HttpStatusCode.NotFound)
-            }
-        }
-    
-        // Update city
-        put("/cities/{id}") {
-            val id = call.parameters["id"]?.toInt() ?: throw IllegalArgumentException("Invalid ID")
-            val user = call.receive<City>()
-            cityService.update(id, user)
-            call.respond(HttpStatusCode.OK)
-        }
-    
-        // Delete city
-        delete("/cities/{id}") {
-            val id = call.parameters["id"]?.toInt() ?: throw IllegalArgumentException("Invalid ID")
-            cityService.delete(id)
-            call.respond(HttpStatusCode.OK)
-        }
-    }
+
 }
 
 /**
@@ -75,9 +39,9 @@ fun Application.connectToPostgres(embedded: Boolean): Connection {
     if (embedded) {
         return DriverManager.getConnection("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1", "root", "")
     } else {
-        val url = environment.config.property("postgres.url").getString()
-        val user = environment.config.property("postgres.user").getString()
-        val password = environment.config.property("postgres.password").getString()
+        val url = environment.config.property("jdbc:postgresql://localhost:5432/test").getString()
+        val user = environment.config.property("postgres").getString()
+        val password = environment.config.property("Hardpass").getString()
 
         return DriverManager.getConnection(url, user, password)
     }
