@@ -1,6 +1,7 @@
 @file:Suppress("DEPRECATION")
 
 package example.com.database.users
+
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
@@ -31,7 +32,8 @@ object Users : Table("users") {
 
     fun fetchUser(login: String): UserDTO? {
         return try {
-            transaction { val userModel = Users.select { Users.login.eq(login) }.single()
+            transaction {
+                val userModel = Users.select { Users.login.eq(login) }.single()
                 UserDTO(
                     login = userModel[Users.login],
                     password = userModel[password],
@@ -40,11 +42,11 @@ object Users : Table("users") {
                     surname = userModel[surname],
                     email = userModel[email],
                     phone = userModel[phone]
-                ) }
+                )
+            }
 
-        }catch(e: Exception){
+        } catch (e: Exception) {
             null
         }
-
     }
 }
